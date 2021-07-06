@@ -1,0 +1,18 @@
+//注意：每次调用$.get()或$.post()或$.ajax的时候
+//都会调会调用这个函数,会拿到ajax调用的配置对象
+$.ajaxPrefilter(function(option){
+	option.url='http://api-breakingnews-web.itheima.net'+option.url
+	console.log(option.url)
+	//判断是否权限数据
+	if(option.url.indexOf(/my/)!==-1){
+	 option.headers={
+	 Authorization:localStorage.getItem('token')||""	
+	 }
+	}
+option.complete=function(res){
+		if(res.responseJSON.status===1&&res.responseJSON.message==="身份认证失败！"){
+			localStorage.removeItem('token')
+			location.href="login.html"
+		}
+		}
+})
